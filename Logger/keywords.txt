@@ -1,0 +1,26 @@
+#=================================#
+# Syntax Coloring Map For Logger  #
+#=================================#
+# Class (KEYWORD3)                #
+#=================================#
+
+Logger	KEYWORD3
+
+#=================================#
+# Methods and Functions (KEYWORD2)#
+#=================================#
+
+Log	KEYWORD2
+Info	KEYWORD2
+Error	KEYWORD2
+Debug	KEYWORD2
+setDebug	KEYWORD2
+setLogging	KEYWORD2
+getLogging	KEYWORD2
+getDebug	KEYWORD2
+
+#=================================#
+# Constants (LITERAL1)            #
+#=================================#
+
+#none
