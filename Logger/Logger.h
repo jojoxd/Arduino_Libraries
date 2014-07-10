@@ -15,10 +15,11 @@ class Logger{
 		void setLogging(boolean logging);
 		boolean getLogging();
 		boolean getDebug();
-		int multiPrint(char *str, ...);
 	private:
 		boolean _debug;
 		boolean _logging;
+		void _SayPT(String what, String prefix, String text);
+		void _SayT(String what, String text);
 };
 
 #endif
