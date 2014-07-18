@@ -1,25 +1,38 @@
 #ifndef Logger_h
 #define Logger_h
 
-#include "Arduino.h"
+#include "arduino.h"
 
 class Logger{
-    public:
-        Logger();
-        ~Logger();
-        void Log(String prefix, String text);
+	public:
+		// Constructor & Destructor:
+		Logger(String EnableThis);
+		~Logger();
+		
+		// all public functions:
+		void Log(String prefix, String text);
 		void Info(String prefix, String text);
+		void Warn(String prefix, String text);
 		void Error(String prefix, String text);
+		void Fatal(String prefix, String text);
 		void Debug(String prefix, String text);
-		void setDebug(boolean debug);
-		void setLogging(boolean logging);
-		boolean getLogging();
+		void setDebug(boolean dbg);
 		boolean getDebug();
+		
+		// all public variables:
+		String logLevel_debug = "debug";
+		String logLevel_warn = "warn";
+		String logLevel_fatal = "fatal";
+		String logLevel_error = "error";
+		String logLevel_log = "log";
+		
 	private:
-		boolean _debug;
-		boolean _logging;
-		void _SayPT(String what, String prefix, String text);
-		void _SayT(String what, String text);
+		// private functions & variables
+		void _SAY_T(String LogLevel, String text);
+		void _SAY_PT(String LogLevel, String prefix, String text);
+		boolean _debug = false;
+		boolean SerialEnabled = false;
+		boolean ConsoleEnabled = false;
 };
 
 #endif

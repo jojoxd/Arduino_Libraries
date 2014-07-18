@@ -1,99 +1,136 @@
 #include "Logger.h"
-#include <stdio.h>
+#include "arduino.h"
+#include <Console.h>
+
+/*	Public Functions			||
+||								||
+||	Contents: 					||
+||		-	Constructor			||
+||		- 	Destructor			||
+||								*/
 
 // Constructor: 
-Logger::Logger(){
-	// testfor serial
-	if(!Serial){
-		Serial.begin(9600);
-		while(!Serial){};
+Logger::Logger(String EnableThis){
+	EnableThis.toLowerCase(); // lowercasing is a good practice!
+	if(EnableThis.indexOf("console") > -1){
+		// enable Console
+		ConsoleEnabled = true;
 	}
-	else{
-		// serial is already on!
+	if(EnableThis.indexOf("serial") > -1){
+		// enable Serial
+		SerialEnabled = true;
 	}
 }
+
+boolean ConsoleEnabled = false;
+boolean SerialEnabled = false;
 
 // Destructor:
 Logger::~Logger(){
-	Serial.end();
 }
 
-// Variables:
-boolean _logging = true;
-boolean _debug = false;
+/*	Declaring LogLevels			*/
+const String logLevel_debug = "debug";
+const String logLevel_warn = "warn";
+const String logLevel_fatal = "fatal";
+const String logLevel_error = "error";
+const String logLevel_info = "log";
 
-// functions:
+/*	Declaring functions			*/
 void Logger::Log(String prefix, String text){
 	if(text == ""){
-    	// use prefix as text
-		_SayT("Log", prefix);
+		// prefix as text, no prefix
+		_SAY_T(logLevel_log, prefix);
 	}
 	else{
-    	// a prefix and text is given
-		_SayPT("Log", prefix, text);
+		// function as normal
+		_SAY_PT(logLevel_log, prefix, text);
 	}
-}
-
+};
 void Logger::Info(String prefix, String text){
 	if(text == ""){
-    	// use prefix as text
-		_SayT("Info", prefix);
+		// prefix as text, no prefix
+		_SAY_T(logLevel_info, prefix);
 	}
 	else{
-    	// a prefix and text is given
-		_SayPT("Info", prefix, text);
+		// function as normal
+		_SAY_PT(logLevel_log, prefix, text);
 	}
-}
-
+};
+void Logger::Warn(String prefix, String text){
+	if(text == ""){
+		// prefix as text, no prefix
+		_SAY_T(logLevel_warn, prefix);
+	}
+	else{
+		// function as normal
+		_SAY_PT(logLevel_warn, prefix, text);
+	}
+};
 void Logger::Error(String prefix, String text){
 	if(text == ""){
-    	// use prefix as text
-		_SayT("Error", prefix);
+		// prefix as text, no prefix
+		_SAY_T(logLevel_error, prefix);
 	}
 	else{
-    	// a prefix and text is given
-		_SayPT("Error", prefix, text);
+		// function as normal
+		_SAY_PT(logLevel_error, prefix, text);
 	}
-}
-
+};
+void Logger::Fatal(String prefix, String text){
+	if(text == ""){
+		// prefix as text, no prefix
+		_SAY_T(logLevel_fatal, prefix);
+	}
+	else{
+		// function as normal
+		_SAY_PT(logLevel_fatal, prefix, text);
+	}
+};
 void Logger::Debug(String prefix, String text){
-	if(getDebug()){
+	if(_debug){
 		if(text == ""){
-			// use prefix as text
-			_SayT("Debug", prefix);
+			// prefix as text, no prefix
+			_SAY_T(logLevel_debug, prefix);
 		}
 		else{
-			// a prefix and text is given
-			_SayPT("Debug", prefix, text);
+			// function as normal
+			_SAY_PT(logLevel_debug, prefix, text);
 		}
 	}
-	else{
-		// debug disabled, don't write to Serial
-	}
-}
+};
 
-void Logger::_SayPT(String what, String prefix, String text){
-	Serial.println("[" + what + "] [" + prefix + "]: " + text); // it compiles, dunno if it works
-	//Serial.print("["); Serial.print(what); Serial.print("] ["); Serial.print(prefix); Serial.print("]: "); Serial.println(text);
-}
+boolean _debug = false;
 
-void Logger::_SayT(String what, String text){
-	Serial.println("[" + what + "]: " + text); // it compiles, dunno if it works
-	//Serial.print("["); Serial.print(what); Serial.print("]: "); Serial.println(text);
-}
-
-void Logger::setDebug(boolean debug){
-	_debug = debug;
-}
-
-void Logger::setLogging(boolean logging){
-	_logging = logging;
-}
-
-boolean getLogging(){
-	return _logging;
+void Logger::setDebug(boolean dbg){
+	_debug = dbg;
 }
 
 boolean getDebug(){
 	return _debug;
+}
+
+/*	Private Functions			||
+||								||
+||	Contents:					||
+||		-	_SAY_T				||
+||		-	_SAY_PT				||
+||								*/
+
+void Logger::_SAY_T(String LogLevel, String text){
+	if(this->ConsoleEnabled){
+		Console.println("[" + LogLevel + "]: " + (String)text);
+	}
+	if(this->SerialEnabled){
+		Serial.println("[" + LogLevel + "]: " + (String)text);
+	}
+}
+
+void Logger::_SAY_PT(String LogLevel, String prefix, String text){
+	if(this->ConsoleEnabled){
+		Console.println("[" + (String)LogLevel + "] [" + (String)prefix + "]: " + (String)text);
+	}
+	if(this->SerialEnabled){
+		Serial.println("[" + (String)LogLevel + "] [" + (String)prefix + "]: " + (String)text);
+	}
 }
